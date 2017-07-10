@@ -885,7 +885,7 @@ class Column(NotifierMixin):
     @classmethod
     def _verify_keywords(cls, name=None, format=None, unit=None, null=None,
                          bscale=None, bzero=None, disp=None, start=None,
-                         dim=None, coord_type=None, coord_unit=None, 
+                         dim=None, coord_type=None, coord_unit=None,
                          ref_value=None, coord_inc=None, ref_point=None,
                          ascii=None):
         """
