@@ -88,6 +88,8 @@ astropy.time
 astropy.timeseries
 ^^^^^^^^^^^^^^^^^^
 
+- A custom binning scheme is added in ``aggregate_downsample``. [#11266]
+
 astropy.uncertainty
 ^^^^^^^^^^^^^^^^^^^
 

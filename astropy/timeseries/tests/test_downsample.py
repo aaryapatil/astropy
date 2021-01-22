@@ -38,10 +38,14 @@ def test_timeseries_invalid():
 
     with pytest.raises(TypeError) as exc:
         aggregate_downsample(TimeSeries(), time_bin_size=1)
-    assert exc.value.args[0] == ("time_bin_size should be a astropy.unit quantity")
+    assert exc.value.args[0] == ("'time_bin_size' should be a Quantity or a TimeDelta")
 
 
 def test_downsample():
+    with pytest.raises(TypeError) as exc:
+        aggregate_downsample(ts, time_bin_start=Time('2016-03-22T12:30:31'))
+    assert exc.value.args[0] == ("Insufficient binning arguments are provided")
+
     down_1 = aggregate_downsample(ts, time_bin_size=1*u.second)
     u.isclose(down_1.time_bin_size, [1, 1, 1, 1, 1]*u.second)
     assert_equal(down_1.time_bin_start.isot, Time(['2016-03-22T12:30:31.000', '2016-03-22T12:30:32.000',

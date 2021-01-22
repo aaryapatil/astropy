@@ -41,18 +41,18 @@ def aggregate_downsample(time_series, *, time_bin_size=None, time_bin_start=None
     ----------
     time_series : :class:`~astropy.timeseries.TimeSeries`
         The time series to downsample.
-    time_bin_size : `~astropy.units.Quantity`, optional
+    time_bin_size : `~astropy.units.Quantity` or `~astropy.time.TimeDelta`
         The time interval for the binned time series. This is either a scalar
         value (in which case all time bins will be assumed to have the same
         duration) or as an array of values (in which case each time bin can
         have a different duration). If this argument is provided,
         ``time_bin_end`` should not be provided.
-    time_bin_start : `~astropy.time.Time` or iterable, optional
+    time_bin_start : `~astropy.time.Time` or iterable
         The start time for the binned time series - this can be either given
         directly as a `~astropy.time.Time` array or as any iterable that
         initializes the `~astropy.time.Time` class. This can also be a scalar
         value if ``time_bin_size`` is provided.
-    time_bin_end : `~astropy.time.Time` or iterable, optional
+    time_bin_end : `~astropy.time.Time` or iterable
         The times of the end of each bin - this can be either given directly as
         a `~astropy.time.Time` array or as any iterable that initializes the
         `~astropy.time.Time` class. This can only be given if ``time_bin_start``
@@ -81,10 +81,10 @@ def aggregate_downsample(time_series, *, time_bin_size=None, time_bin_start=None
         raise TypeError("time_series should be a TimeSeries")
 
     if time_bin_size is not None and not isinstance(time_bin_size, (u.Quantity, TimeDelta)):
-        raise TypeError("time_bin_size should be a astropy.unit quantity")
+        raise TypeError("'time_bin_size' should be a Quantity or a TimeDelta")
 
-    if time_bin_start is not None and not isinstance(time_bin_end, (Time, TimeDelta)):
-        time_bin_end = Time(time_bin_end)
+    if time_bin_start is not None and not isinstance(time_bin_start, (Time, TimeDelta)):
+        time_bin_start = Time(time_bin_start)
 
     if time_bin_end is not None and not isinstance(time_bin_end, (Time, TimeDelta)):
         time_bin_end = Time(time_bin_end)
@@ -104,7 +104,7 @@ def aggregate_downsample(time_series, *, time_bin_size=None, time_bin_start=None
     if time_bin_size is None and time_bin_end is None:
         if time_bin_start.isscalar:
             if n_bins is None:
-                raise TypeError("Insufficient binning arguments are provided.")
+                raise TypeError("Insufficient binning arguments are provided")
             else:
                 # `nbins` defaults to the number needed to fit all points
                 time_bin_size = time_duration/n_bins
