@@ -117,7 +117,7 @@ def aggregate_downsample(time_series, *, time_bin_size=None, time_bin_start=None
         if time_bin_size.isscalar:
             if n_bins is None:
                 bin_size_sec = time_bin_size.to_value(u.s)
-                n_bins = int(np.ceil((time_duration)/bin_size_sec))
+                n_bins = int(np.ceil(time_duration/bin_size_sec))
 
     binned = BinnedTimeSeries(time_bin_size=time_bin_size,
                               time_bin_start=time_bin_start,
@@ -138,14 +138,14 @@ def aggregate_downsample(time_series, *, time_bin_size=None, time_bin_start=None
     # Find the relative time since the start time, in seconds
     relative_time_sec = (sorted.time - bin_start[0]).sec
     # Duration of binned timeseries in seconds
-    time_duration = (bin_end[-1] - bin_start[0]).sec
+    bin_duration = (bin_end[-1] - bin_start[0]).sec
 
     bin_start_sec = (bin_start - bin_start[0]).sec
     bin_end_sec = (bin_end - bin_start[0]).sec
 
     # Find the subset of the table that is inside the bins
     keep = ((relative_time_sec >= 0) &
-            (relative_time_sec <= time_duration))
+            (relative_time_sec <= bin_duration))
 
     # Find out indices to be removed because of uncontiguous bins
     for ind in range(n_bins-1):
