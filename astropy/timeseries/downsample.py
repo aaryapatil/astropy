@@ -108,7 +108,7 @@ def aggregate_downsample(time_series, *, time_bin_size=None, time_bin_start=None
             else:
                 # `nbins` defaults to the number needed to fit all points
                 time_bin_size = time_duration/n_bins
-        else:    
+        else:
             time_bin_end = sorted.time[-1]
 
     # Determine the number of bins if needed
@@ -149,7 +149,7 @@ def aggregate_downsample(time_series, *, time_bin_size=None, time_bin_start=None
 
     # Find out indices to be removed because of uncontiguous bins
     for ind in range(n_bins-1):
-        delete_indices = np.where(np.logical_and(relative_time_sec > bin_end_sec[ind], 
+        delete_indices = np.where(np.logical_and(relative_time_sec > bin_end_sec[ind],
                                                  relative_time_sec < bin_start_sec[ind+1]))
         keep[delete_indices] = False
 
