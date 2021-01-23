@@ -36,16 +36,47 @@ def test_timeseries_invalid():
         aggregate_downsample(None)
     assert exc.value.args[0] == ("time_series should be a TimeSeries")
 
+
+def test_time_bin_invalid():
+
+    # Make sure things crash when time_bin_* is passed incorrectly.
+
     with pytest.raises(TypeError) as exc:
         aggregate_downsample(TimeSeries(), time_bin_size=1)
     assert exc.value.args[0] == ("'time_bin_size' should be a Quantity or a TimeDelta")
 
 
-def test_downsample():
-    with pytest.raises(TypeError) as exc:
-        aggregate_downsample(ts, time_bin_start=Time('2016-03-22T12:30:31'))
-    assert exc.value.args[0] == ("Insufficient binning arguments are provided")
+def test_time_bin_conversion():
 
+    # Make sure time_bin_start and time_bin_end are properly converted to Time
+
+    down_start = aggregate_downsample(ts, time_bin_start=['2016-03-22T12:30:31'],
+                                time_bin_size=[1]*u.s)
+    assert_equal(down_start.time_bin_start.isot, ['2016-03-22T12:30:31.000'])
+
+    down_end = aggregate_downsample(ts, time_bin_start=['2016-03-22T12:30:31', '2016-03-22T12:30:33'],
+                                    time_bin_end='2016-03-22T12:30:34')
+    assert_equal(down_end.time_bin_end.isot, ['2016-03-22T12:30:33.000', '2016-03-22T12:30:34.000'])
+
+
+def test_time_bin_end_auto():
+
+    # Interpret `time_bin_end` as the end of timeseries when `time_bin_start` is
+    # an array and `time_bin_size` is not provided
+
+    down_auto_end = aggregate_downsample(ts, time_bin_start=['2016-03-22T12:30:31', '2016-03-22T12:30:33'])
+    assert_equal(down_auto_end.time_bin_end.isot, ['2016-03-22T12:30:33.000', '2016-03-22T12:30:35.000'])
+
+
+def test_nbins():
+
+    # n_bins should default to the number needed to fit all the original points
+
+    down_nbins = aggregate_downsample(ts, n_bins=2)
+    assert_equal(down_nbins.time_bin_start.isot, ['2016-03-22T12:30:31.000', '2016-03-22T12:30:33.000'])
+
+
+def test_downsample():
     down_1 = aggregate_downsample(ts, time_bin_size=1*u.second)
     u.isclose(down_1.time_bin_size, [1, 1, 1, 1, 1]*u.second)
     assert_equal(down_1.time_bin_start.isot, Time(['2016-03-22T12:30:31.000', '2016-03-22T12:30:32.000',

@@ -88,7 +88,9 @@ astropy.time
 astropy.timeseries
 ^^^^^^^^^^^^^^^^^^
 
-- A custom binning scheme is added in ``aggregate_downsample``. [#11266]
+- A custom binning scheme is added in ``aggregate_downsample`` which allows
+  ``time_bin_start`` and ``time_bin_size`` to be arrays, and adds an optional
+  ``time_bin_end``. This mirrors the API for ``BinnedTimeSeries``. [#11266]
 
 astropy.uncertainty
 ^^^^^^^^^^^^^^^^^^^

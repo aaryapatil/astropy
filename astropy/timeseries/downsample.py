@@ -92,8 +92,7 @@ def aggregate_downsample(time_series, *, time_bin_size=None, time_bin_start=None
     # Use the table sorted by time
     sorted = time_series.iloc[:]
 
-    # The following part makes sure that backwards
-    # compatability is provided.
+    # The following part makes sure that backwards compatability is provided.
     # Determine start time if needed
     if time_bin_start is None:
         time_bin_start = sorted.time[0]
@@ -107,7 +106,7 @@ def aggregate_downsample(time_series, *, time_bin_size=None, time_bin_start=None
                 raise TypeError("Insufficient binning arguments are provided")
             else:
                 # `nbins` defaults to the number needed to fit all points
-                time_bin_size = time_duration/n_bins
+                time_bin_size = time_duration/n_bins*u.s
         else:
             time_bin_end = sorted.time[-1]
 
@@ -155,8 +154,8 @@ def aggregate_downsample(time_series, *, time_bin_size=None, time_bin_start=None
 
     subset = sorted[keep]
 
-    # Figure out which bin each row falls in - the -1 is because items
-    # falling in the first bins will have index 1 but we want that to be 0
+    # Figure out which bin each row falls in by sorting with respect
+    # to the bin end times
     indices = np.searchsorted(bin_end_sec, relative_time_sec[keep])
 
     # Determine rows where values are defined
